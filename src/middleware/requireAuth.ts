@@ -22,7 +22,7 @@ export const requireAuth = (req: AuthenticatedRequest, res: Response, next: Next
         return
     }
 
-    const token = authHeader.split('')[1]
+    const token = authHeader.split(' ')[1]
 
     try {
         const payload = jwt.verify(token, SUPABASE_JWT_SECRET) as any
