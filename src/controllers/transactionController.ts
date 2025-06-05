@@ -7,19 +7,17 @@ export const createTransaction = async (req: AuthenticatedRequest, res: Response
   const user_id = req.user!.id
 
   try {
-    const valuesToInsert = {
-      user_id,
-      category_id,
-      amount: String(amount),
-      description,
-      transaction_date: new Date(transaction_date),
-    };
-
     const inserted = await db
       .insertInto('transactions')
-      .values(valuesToInsert)
+      .values({
+        user_id,
+        category_id,
+        amount,
+        description,
+        transaction_date,
+      })
       .returningAll()
-      .executeTakeFirst();
+      .executeTakeFirst()
 
     res.status(201).json(inserted)
   } catch (error) {
