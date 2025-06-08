@@ -3,7 +3,7 @@ import db from '../db'
 import { AuthenticatedRequest } from '../middleware/requireAuth'
 
 export const createBudget = async (req: AuthenticatedRequest, res: Response) => {
-  const { category_id, amount, start_date, end_date } = req.body
+  const { category_id, amount, used_amount, alert_value, start_date, end_date } = req.body
   const user_id = req.user!.id
 
   try {
@@ -13,6 +13,8 @@ export const createBudget = async (req: AuthenticatedRequest, res: Response) => 
         user_id,
         category_id,
         amount,
+        used_amount,
+        alert_value,
         start_date,
         end_date
       })
