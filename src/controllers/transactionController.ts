@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, RequestHandler, Response } from 'express'
 import { AuthenticatedRequest } from '../middleware/requireAuth'
 import db from '../db'
 
@@ -41,5 +41,28 @@ export const getTransactions = async (req: AuthenticatedRequest, res: Response) 
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: 'Failed to fetch transactions' })
+  }
+}
+
+export const deleteTransaction: RequestHandler = async (req, res) => {
+  const user_id = (req as AuthenticatedRequest).user!.id
+  const { id } = req.body
+
+  try {
+    const result = await db
+      .deleteFrom('transactions')
+      .where('id', '=', id)
+      .where('user_id', '=', user_id)
+      .executeTakeFirst()
+
+    if (result.numDeletedRows == 0n) {
+      res.status(404).json({ message: 'Trransaction not found or you do not have permission to delete it' })
+      return
+    }
+      
+    res.status(200).json({ message: 'Transaction deleted successfully' })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to delete transaction' })
   }
 }
